@@ -1,0 +1,32 @@
+.idea
+*.class
+*.iml
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+.settings
+.settings/*
+.classpath
+.project
+target
+target/*
+classes
+classes/*
+out/
+
+rebel.xml
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+/logs
+
+*.rebel-remote.xml
+*.rebel-remote.xml.bak
+*.rebel.xml.bak
+*Mine_*
+.history

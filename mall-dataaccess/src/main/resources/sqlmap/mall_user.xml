@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xly.mall.dataaccess.dao.mysql.user.UserMapper">
+
+	<resultMap id="UserDO" type="com.xly.mall.dataaccess.domain.user.UserDO">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="user_type" jdbcType="INTEGER" property="userType" />
+		<result column="user_name" jdbcType="VARCHAR" property="userName" />
+		<result column="real_name" jdbcType="VARCHAR" property="realName" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="email_verify_code" jdbcType="VARCHAR" property="emailVerifyCode" />
+		<result column="email_verify_time" jdbcType="TIMESTAMP" property="emailVerifyTime" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="phone_verify_code" jdbcType="VARCHAR" property="phoneVerifyCode" />
+		<result column="phone_verify_time" jdbcType="TIMESTAMP" property="phoneVerifyTime" />
+		<result column="is_activated" jdbcType="TINYINT" property="isActivated" />
+		<result column="is_disabled" jdbcType="TINYINT" property="isDisabled" />
+		<result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+		<result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+		<result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="create_user" jdbcType="VARCHAR" property="createUser" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+	</resultMap>
+
+	<sql id="column_List">
+		mu.id,mu.user_type,mu.user_name,mu.real_name,mu.password,mu.email,mu.email_verify_code,mu.email_verify_time,mu.phone,mu.phone_verify_code,mu.phone_verify_time,mu.is_activated,mu.is_disabled,mu.register_time,mu.last_login_time,mu.last_login_ip,mu.remark,mu.create_time,mu.create_user,mu.update_time,mu.update_user
+	</sql>
+
+	<select id="findById" resultMap="UserDO" parameterType="java.lang.Integer">
+		SELECT <include refid="column_List"/> FROM mall_user mu 
+		WHERE mu.id = #{id, jdbcType=INTEGER} AND mu.data_status = 1 
+	</select>
+
+	<select id="listCount" resultType="java.lang.Integer" parameterType="map">
+		SELECT count(mu.id) FROM mall_user mu 
+		<where>
+			<if test="true">
+				AND mu.data_status = 1
+			</if>
+		</where>
+	</select>
+
+	<select id="listPage" resultMap="UserDO" parameterType="map">
+		SELECT <include refid="column_List"/> FROM mall_user mu 
+		<where>
+			<if test="true">
+				AND mu.data_status = 1
+			</if>
+		</where>
+		LIMIT #{maps.start},#{maps.pageSize}
+	</select>
+
+	<sql id="set_column_sql">
+		<set>
+			<if test="userType != null">
+				user_type = #{userType,jdbcType=INTEGER},
+			</if>
+			<if test="userName != null">
+				user_name = #{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				real_name = #{realName,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="emailVerifyCode != null">
+				email_verify_code = #{emailVerifyCode,jdbcType=VARCHAR},
+			</if>
+			<if test="emailVerifyTime != null">
+				email_verify_time = #{emailVerifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="phoneVerifyCode != null">
+				phone_verify_code = #{phoneVerifyCode,jdbcType=VARCHAR},
+			</if>
+			<if test="phoneVerifyTime != null">
+				phone_verify_time = #{phoneVerifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isActivated != null">
+				is_activated = #{isActivated,jdbcType=TINYINT},
+			</if>
+			<if test="isDisabled != null">
+				is_disabled = #{isDisabled,jdbcType=TINYINT},
+			</if>
+			<if test="registerTime != null">
+				register_time = #{registerTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastLoginTime != null">
+				last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastLoginIp != null">
+				last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUser != null">
+				create_user = #{createUser,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUser != null">
+				update_user = #{updateUser,jdbcType=VARCHAR},
+			</if>
+		</set>
+	</sql>
+
+	<insert id="save" keyProperty="id" useGeneratedKeys="true" parameterType="com.xly.mall.dataaccess.domain.user.UserDO">
+		INSERT INTO mall_user <include refid="set_column_sql"/>
+	</insert>
+
+	<update id="update" parameterType="com.xly.mall.dataaccess.domain.user.UserDO">
+		UPDATE mall_user <include refid="set_column_sql"/> WHERE id = #{id, jdbcType=INTEGER}
+	</update>
+
+	<select id="findByUserName" resultMap="UserDO" parameterType="java.lang.String">
+		SELECT <include refid="column_List"/> FROM mall_user mu WHERE mu.user_name = #{userName,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findByUserId" resultMap="UserDO" parameterType="java.lang.Integer">
+		SELECT <include refid="column_List"/> FROM mall_user mu WHERE mu.id = #{userId,jdbcType=INTEGER}
+	</select>
+</mapper>

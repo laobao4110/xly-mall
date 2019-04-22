@@ -1,0 +1,367 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.xly</groupId>
+    <artifactId>xly-mall</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>mall-common</module>
+        <module>mall-core</module>
+        <module>mall-dataaccess</module>
+        <module>mall-web</module>
+        <module>mall-worker</module>
+    </modules>
+    <name>xly-mall Maven Mojo</name>
+    <url>http://maven.apache.org</url>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.targetJdk>1.7</project.build.targetJdk>
+        <jm.build.jvmsize>1024m</jm.build.jvmsize>
+        <jm.maven.version>3.0.5</jm.maven.version>
+        <spring-version>4.3.7.RELEASE</spring-version>
+        <!-- dependency plugin version -->
+        <dep.maven-compiler-plugin.version>3.1</dep.maven-compiler-plugin.version>
+        <dep.maven-javadoc-plugin.version>2.9.1</dep.maven-javadoc-plugin.version>
+        <dep.maven-source-plugin.version>2.2.1</dep.maven-source-plugin.version>
+        <dep.maven-jar-plugin.version>2.5</dep.maven-jar-plugin.version>
+        <dep.onejar-maven-plugin>1.4.4</dep.onejar-maven-plugin>
+        <dep.maven-site-plugin.version>3.3</dep.maven-site-plugin.version>
+        <dep.maven-pmd-plugin.version>2.6</dep.maven-pmd-plugin.version>
+        <dep.maven-war-plugin.version>2.6</dep.maven-war-plugin.version>
+        <dep.maven-deploy-plugin.version>2.8.2</dep.maven-deploy-plugin.version>
+        <dep.maven-checkstyle-plugin.version>2.12.1</dep.maven-checkstyle-plugin.version>
+        <dep.findbugs-maven-plugin.version>2.5.1</dep.findbugs-maven-plugin.version>
+        <logback.version>1.1.7</logback.version>
+        <slf4j.version>1.7.21</slf4j.version>
+    </properties>
+    <prerequisites>
+        <maven>${jm.maven.version}</maven>
+    </prerequisites>
+
+    <!--做版本统一-->
+    <dependencyManagement>
+        <!--spring的核心包-->
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+
+            <!-- Spring-Jdbc -->
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+
+            <!--Spring-test -->
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+
+            <!-- Spring面向切面编程 -->
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-aspects -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!--引入项目依赖的jar包 -->
+    <!-- SpringMVC、Spring -->
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
+    <dependencies>
+
+        <!--引入pageHelper分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
+        <!-- MBG -->
+        <!-- https://mvnrepository.com/artifact/org.mybatis.generator/mybatis-generator-core -->
+        <dependency>
+            <groupId>org.mybatis.generator</groupId>
+            <artifactId>mybatis-generator-core</artifactId>
+            <version>1.3.5</version>
+        </dependency>
+
+        <!-- 返回json字符串的支持 -->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.8.8</version>
+        </dependency>
+
+        <!--JSR303数据校验支持；tomcat7及以上的服务器，
+        tomcat7以下的服务器：el表达式。额外给服务器的lib包中替换新的标准的el
+        -->
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.4.1.Final</version>
+        </dependency>
+
+        <!--MyBatis -->
+        <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.4.2</version>
+        </dependency>
+        <!-- MyBatis整合Spring的适配包 -->
+        <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+
+        <!-- 数据库连接池、驱动 -->
+        <!-- https://mvnrepository.com/artifact/c3p0/c3p0 -->
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.41</version>
+        </dependency>
+        <!-- （jstl，servlet-api，junit） -->
+        <!-- https://mvnrepository.com/artifact/jstl/jstl -->
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- junit -->
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <!-- maven-compiler-plugin 指定maven编译的jdk版本,如果不指定,maven3默认用jdk 1.5 maven2默认用jdk1.3 -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${dep.maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中不能使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
+                        <source>${project.build.targetJdk}</source> <!-- 源代码使用的JDK版本 -->
+                        <target>${project.build.targetJdk}</target> <!-- 需要生成的目标class文件的编译版本 -->
+                        <encoding>${project.build.sourceEncoding}</encoding> <!-- 字符集编码 -->
+                        <maxmem>${jm.build.jvmsize}</maxmem> <!-- 编译器使用的最大内存 -->
+                        <!--<skipTests>true</skipTests>&lt;!&ndash; 跳过测试 &ndash;&gt;-->
+                        <showWarnings>true</showWarnings>
+                        <compilerArguments>
+                            <Werror/>
+                        </compilerArguments>
+                    </configuration>
+                </plugin>
+                <!--本插件用于指定本项目生成的jar包中的MANIFEST.MF文件中的配置，如Class-Path和Main-Class-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${dep.maven-jar-plugin.version}</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addClasspath>true</addClasspath> <!--指定添加项目中使用的外部jar的classpath项-->
+                                <classpathPrefix>lib
+                                </classpathPrefix> <!--指定外部jar所在的路径，添加的classpath为 【路径】/jar文件名，Maven自动解析文件名，使用本项目生成的jar包时，当前目录下有lib文件夹，lib文件夹中有本项目使用的外部jar文件即可-->
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <!--通过maven-onejar插件将项目打包成 一个可运行jar文件-->
+                <plugin>
+                    <groupId>com.jolira</groupId>
+                    <artifactId>onejar-maven-plugin</artifactId>
+                    <version>${dep.onejar-maven-plugin}</version>
+                    <executions>
+                        <execution>
+                            <configuration>
+                                <attachToBuild>true</attachToBuild>
+                                <classifier>onejar</classifier>
+                            </configuration>
+                            <goals>
+                                <goal>one-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- 生成sources源码包的插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${dep.maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- 生成javadoc文档包的插件 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${dep.maven-javadoc-plugin.version}</version>
+                    <configuration>
+                        <source>${project.build.targetJdk}</source>
+                        <target>${project.build.targetJdk}</target>
+                        <charset>${project.build.sourceEncoding}</charset>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <docencoding>${project.build.sourceEncoding}</docencoding>
+                        <maxmem>${jm.build.jvmsize}</maxmem>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>do-javadoc</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- 打包成 一个可运行war文件- -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${dep.maven-war-plugin.version}</version>
+                    <configuration>
+                        <webResources>
+                            <resource>
+                                <directory>src/main/webapp</directory>
+                                <filtering>true</filtering>
+                            </resource>
+                        </webResources>
+                    </configuration>
+                </plugin>
+                <!--该插件可以将构建出的构件直接部署到POM配置的远程库中-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${dep.maven-deploy-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>deploy</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!--Java项目生成静态HTML网站的插件-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${dep.maven-site-plugin.version}</version>
+                    <configuration>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${dep.maven-pmd-plugin.version}</version>
+                    <configuration>
+                        <targetJdk>${project.build.targetJdk}</targetJdk>
+                        <rulesets>
+                            <ruleset>/pmd_ruleset_minimal.xml</ruleset>
+                        </rulesets>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${dep.maven-checkstyle-plugin.version}</version>
+                    <configuration>
+                        <configLocation>/checkstyle_ruleset_minimal.xml</configLocation>
+                    </configuration>
+                </plugin>
+                <!-- findbugs插件 解析静态代码块 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${dep.findbugs-maven-plugin.version}</version>
+                    <configuration>
+                        <!-- Low、Medium和High (Low最严格) -->
+                        <threshold>High</threshold>
+                        <!-- 设置分析工作的等级，可以为Min、Default和Max -->
+                        <effort>Default</effort>
+                        <findbugsXmlOutput>true</findbugsXmlOutput>
+                        <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                        <xmlOutput>true</xmlOutput>
+                        <formats>
+                            <format>html</format>
+                        </formats>
+                        <configLocation>/findbugs.xml</configLocation>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

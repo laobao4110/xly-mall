@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd">-->
+
+<configuration scan="true" scanPeriod="1s">
+	<appender name="${logback.appender.error}"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logback.file.path}/all_error.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!--日志文件输出的文件名-->
+			<FileNamePattern>${logback.file.path}/all_error.%d{yyyy-MM-dd}.log
+			</FileNamePattern>
+			<!--日志文件保留天数-->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %file:%line - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<appender name="${logback.appender.warn}"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<File>${logback.file.path}/all_warn.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logback.file.path}/all_warn.%d{yyyy-MM-dd}.log
+			</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<appender name="${logback.appender.name}"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+		<File>${logback.file.path}/all_info.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logback.file.path}/all_info.%d{yyyy-MM-dd}.log
+			</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<appender name="all_debug"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<File>${logback.file.path}/all_debug.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${logback.file.path}/all_debug.%d{yyyy-MM-dd}.log
+			</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>
+		</layout>
+	</appender>
+	<!--目前没用到-->
+	<!--<appender name="sql"-->
+		<!--class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+		<!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+			<!--<level>INFO</level>-->
+		<!--</filter>-->
+		<!--<File>${logback.file.path}/sql.log</File>-->
+		<!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+			<!--<FileNamePattern>${logback.file.path}/sql.%d{yyyy-MM-dd}.log-->
+			<!--</FileNamePattern>-->
+			<!--<MaxHistory>30</MaxHistory>-->
+		<!--</rollingPolicy>-->
+		<!--<layout class="ch.qos.logback.classic.PatternLayout">-->
+			<!--<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>-->
+		<!--</layout>-->
+	<!--</appender>-->
+	<!--<appender name="mq_message"-->
+		<!--class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+		<!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+			<!--<level>INFO</level>-->
+		<!--</filter>-->
+		<!--<File>${logback.file.path}/mq_message.log</File>-->
+		<!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+			<!--<FileNamePattern>${logback.file.path}/mq_message.%d{yyyy-MM-dd}.log-->
+			<!--</FileNamePattern>-->
+			<!--<MaxHistory>30</MaxHistory>-->
+		<!--</rollingPolicy>-->
+		<!--<layout class="ch.qos.logback.classic.PatternLayout">-->
+			<!--<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>-->
+		<!--</layout>-->
+	<!--</appender>-->
+	<!--<appender name="dubbo"-->
+		<!--class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+		<!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+			<!--<level>INFO</level>-->
+		<!--</filter>-->
+		<!--<File>${logback.file.path}/dubbo.log</File>-->
+		<!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+			<!--<FileNamePattern>${logback.file.path}/dubbo.%d{yyyy-MM-dd}.log-->
+			<!--</FileNamePattern>-->
+			<!--<MaxHistory>30</MaxHistory>-->
+		<!--</rollingPolicy>-->
+		<!--<layout class="ch.qos.logback.classic.PatternLayout">-->
+			<!--<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>-->
+		<!--</layout>-->
+	<!--</appender>-->
+	<!-- 控制台输出 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+		<encoder>
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{15} - %file:%line - %msg%n%throwable{10}</pattern>
+		</encoder>
+	</appender>
+	<!--<appender name="quartz"-->
+			  <!--class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+		<!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+			<!--<level>INFO</level>-->
+		<!--</filter>-->
+		<!--<File>${logback.file.path}/quartz.log</File>-->
+		<!--<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+			<!--<FileNamePattern>${logback.file.path}/quartz.%d{yyyy-MM-dd}.log-->
+			<!--</FileNamePattern>-->
+			<!--<MaxHistory>30</MaxHistory>-->
+		<!--</rollingPolicy>-->
+		<!--<layout class="ch.qos.logback.classic.PatternLayout">-->
+			<!--<Pattern>%d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n</Pattern>-->
+		<!--</layout>-->
+	<!--</appender>-->
+
+	<jmxConfigurator></jmxConfigurator>
+
+	<logger name="java.sql.Connection" level="${logback.sql.level}" />
+	<logger name="java.sql.Statement" level="${logback.sql.level}" />
+	<logger name="java.sql.PreparedStatement" level="${logback.sql.level}" />
+	<logger name="java.sql.ResultSet" level="${logback.sql.level}" />
+	<!--以下日志目前用不到-->
+	<!--<logger name="com.lxzl.se.dataaccess.mysql.source.interceptor.SqlLogInterceptor" level="${logback.sql.level}">
+		<appender-ref ref="sql" />
+	</logger>
+	<logger name="com.lxzl.se.core.mq.consumer.MqMessageListener" level="${logback.mq.level}">
+		<appender-ref ref="mq_message" />
+	</logger>
+	<logger name="com.lxzl.se.core.mq.source.DynamicMqMessageSender" level="${logback.mq.level}">
+		<appender-ref ref="mq_message" />
+	</logger>
+	<logger name="com.lxzl.se.rpc.dubbo.client.DubboClientFilter" level="${logback.dubbo.level}">
+		<appender-ref ref="dubbo" />
+	</logger>
+	<logger name="com.lxzl.se.core.quartz.job.BaseJob" level="${logback.quartz.level}">
+		<appender-ref ref="quartz" />
+	</logger>-->
+	<logger name="org.quartz.impl.jdbcjobstore.JobStoreTX" level="${logback.quartz.level}" />
+
+	<!--和以上  <logger name="java.sql.Connection" level="${logback.sql.level}" /> 含义一样 这里的 ${logback.root.level} 设置统一日志输出级别-->
+	<root level="${logback.root.level}">
+		<appender-ref ref="console" />
+		<appender-ref ref="${logback.appender.name}" />
+		<appender-ref ref="${logback.appender.error}" />
+		<appender-ref ref="${logback.appender.warn}" />
+	</root>
+</configuration>
