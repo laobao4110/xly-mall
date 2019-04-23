@@ -15,7 +15,7 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="login.jsp">登录</a></li>
+                <li><a href="../login.jsp">登录</a></li>
             </ul>
         </div>
     </div>

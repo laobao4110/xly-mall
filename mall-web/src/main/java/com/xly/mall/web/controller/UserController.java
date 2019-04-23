@@ -49,15 +49,4 @@ public class UserController {
         return resultGenerator.generate(serviceResult.getErrorCode(), serviceResult.getResult());
     }
 
-
-    /**
-     * 到注册页
-     *
-     * @param
-     * @return Result
-     */
-    @RequestMapping(value = "toRegister", method = RequestMethod.GET)
-    public String toRegister() {
-        return "/user/register";
-    }
 }
