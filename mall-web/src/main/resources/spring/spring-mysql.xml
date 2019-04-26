@@ -13,32 +13,109 @@
 
     <!-- Spring的配置文件，这里主要配置和业务逻辑有关的 -->
     <!--=================== 数据源，事务控制，xxx ================-->
-    <context:property-placeholder location="classpath:environment/develop-env.properties" />
+    <!--<context:property-placeholder location="classpath:environment/develop-env.properties" />-->
 
-    <bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-        <property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
-        <property name="driverClass" value="${jdbc.driverClass}"></property>
-        <property name="user" value="${jdbc.user}"></property>
-        <property name="password" value="${jdbc.password}"></property>
+    <!-- 公共库数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+        <property name="maxActive" value="${jdbc.maxActive}" />
+        <property name="initialSize" value="${jdbc.initialSize}" />
+        <property name="maxWait" value="${jdbc.maxWait}" />
+        <property name="maxIdle" value="${jdbc.maxIdle}" />
+        <property name="testOnBorrow" value="${jdbc.testOnBorrow}" />
+        <property name="validationQuery" value="select 1 from dual" />
     </bean>
 
+    <!--todo 没用到，以后主从备份可以用一用，或者多数据源的时候可以用一用-->
+    <!-- 公共库slave1数据源 -->
+    <bean id="dataSourceSlave1" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driverClassName.slave1}" />
+        <property name="url" value="${jdbc.url.slave1}" />
+        <property name="username" value="${jdbc.username.slave1}" />
+        <property name="password" value="${jdbc.password.slave1}" />
+        <property name="maxActive" value="${jdbc.maxActive.slave1}" />
+        <property name="initialSize" value="${jdbc.initialSize.slave1}" />
+        <property name="maxWait" value="${jdbc.maxWait.slave1}" />
+        <property name="maxIdle" value="${jdbc.maxIdle.slave1}" />
+        <property name="testOnBorrow" value="${jdbc.testOnBorrow.slave1}" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+
+    <bean id="dataSourceProxy" class="com.xly.mall.common.base.db.DataSourceProxy">
+        <property name="dataSource" ref="dataSource" />
+        <property name="dbName" value="${jdbc.db}" />
+        <property name="dataSourceKey" value="${jdbc.key}" />
+        <property name="isDefault" value="${jdbc.isDefault}" />
+        <property name="slaveDataSourceMap">
+            <map>
+                <entry key="${jdbc.key.slave1}" value-ref="dataSourceSlave1" />
+            </map>
+        </property>
+    </bean>
+    <!--todo 没用到，以后主从备份可以用一用，或者多数据源的时候可以用一用-->
+
+    <!-- 公共库数据源 -->
+    <bean id="dataSourceA" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc1.driverClassName}" />
+        <property name="url" value="${jdbc1.url}" />
+        <property name="username" value="${jdbc1.username}" />
+        <property name="password" value="${jdbc1.password}" />
+        <property name="maxActive" value="${jdbc1.maxActive}" />
+        <property name="initialSize" value="${jdbc1.initialSize}" />
+        <property name="maxWait" value="${jdbc1.maxWait}" />
+        <property name="maxIdle" value="${jdbc1.maxIdle}" />
+        <property name="testOnBorrow" value="${jdbc1.testOnBorrow}" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+
+    <!--todo 没用到，以后主从备份可以用一用，或者多数据源的时候可以用一用-->
+    <!-- 公共库slave1数据源 -->
+    <bean id="dataSourceSlave1A" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc1.driverClassName.slave1}" />
+        <property name="url" value="${jdbc1.url.slave1}" />
+        <property name="username" value="${jdbc1.username.slave1}" />
+        <property name="password" value="${jdbc1.password.slave1}" />
+        <property name="maxActive" value="${jdbc1.maxActive.slave1}" />
+        <property name="initialSize" value="${jdbc1.initialSize.slave1}" />
+        <property name="maxWait" value="${jdbc1.maxWait.slave1}" />
+        <property name="maxIdle" value="${jdbc1.maxIdle.slave1}" />
+        <property name="testOnBorrow" value="${jdbc1.testOnBorrow.slave1}" />
+        <property name="validationQuery" value="select 1 from dual" />
+    </bean>
+
+    <bean id="dataSourceProxyA" class="com.xly.mall.common.base.db.DataSourceProxy">
+        <property name="dataSource" ref="dataSourceA" />
+        <property name="dbName" value="${jdbc1.db}" />
+        <property name="dataSourceKey" value="${jdbc1.key}" />
+        <property name="isDefault" value="${jdbc1.isDefault}" />
+        <property name="slaveDataSourceMap">
+            <map>
+                <entry key="${jdbc1.key.slave1}" value-ref="dataSourceSlave1A" />
+            </map>
+        </property>
+    </bean>
+    <!--todo 没用到，以后主从备份可以用一用，或者多数据源的时候可以用一用-->
+
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="pooledDataSource" />
+        <property name="dataSource" ref="dynamicDataSource" />
     </bean>
 
     <!--================== 配置和MyBatis的整合=============== -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
           p:typeAliasesPackage="com.xly.mall.dataaccess.domain" >
         <!-- 指定mybatis全局配置文件的位置 -->
-        <property name="dataSource" ref="pooledDataSource"/>
-        <property name="configLocation" value="classpath:sqlmap-config.xml"/>
+        <property name="dataSource" ref="dynamicDataSource"/>
+        <property name="configLocation" value="classpath:/sqlmap-config.xml"/>
         <!-- 指定mybatis，mapper文件的位置 -->
         <!--<property name="mapperLocations" value="classpath:sqlmap/*.xml"></property>-->
     </bean>
 
     <!-- 配置扫描器，将mybatis接口的实现加入到ioc容器中 -->
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:sqlSessionFactoryBeanName="sqlSessionFactory"
-          p:basePackage="com.xly.mall.dataaccess.dao.mysql">
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" p:basePackage="com.xly.mall.dataaccess.dao.mysql"
+          p:sqlSessionFactoryBeanName="sqlSessionFactory">
         <!--&lt;!&ndash;扫描所有dao接口的实现，加入到ioc容器中 &ndash;&gt;-->
         <!--<property name="basePackage" value="com.xly.mall.dataaccess.dao.mysql"/>-->
     </bean>
@@ -48,32 +125,35 @@
         <constructor-arg index="0" ref="sqlSessionFactory" />
     </bean>
     <!--=============================================  -->
+    <!-- 事务注解驱动 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
 
-     <!--事务注解驱动-->
-    <!--<tx:annotation-driven transaction-manager="transactionManager" />-->
+    <!-- 事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dynamicDataSource" />
+    </bean>
 
-     <!--===============事务控制的配置 ================-->
-    <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
-        <!--&lt;!&ndash;控制住数据源  &ndash;&gt;-->
-        <!--<property name="dataSource" ref="pooledDataSource"></property>-->
-    <!--</bean>-->
-    <!--&lt;!&ndash;开启基于注解的事务，使用xml配置形式的事务（必要主要的都是使用配置式）  &ndash;&gt;-->
-    <!--<aop:config>-->
-        <!--&lt;!&ndash; 切入点表达式 &ndash;&gt;-->
-        <!--<aop:pointcut expression="execution(* com.atguigu.crud.service..*(..))" id="txPoint"/>-->
-        <!--&lt;!&ndash; 配置事务增强 &ndash;&gt;-->
-        <!--<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>-->
-    <!--</aop:config>-->
+    <bean id="transactionTemplate"
+          class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="isolationLevelName" value="ISOLATION_READ_COMMITTED" />
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
 
-    <!--&lt;!&ndash;配置事务增强，事务如何切入  &ndash;&gt;-->
-    <!--<tx:advice id="txAdvice" transaction-manager="transactionManager">-->
-        <!--<tx:attributes>-->
-            <!--&lt;!&ndash; 所有方法都是事务方法 &ndash;&gt;-->
-            <!--<tx:method name="*"/>-->
-            <!--&lt;!&ndash;以get开始的所有方法  &ndash;&gt;-->
-            <!--<tx:method name="get*" read-only="true"/>-->
-        <!--</tx:attributes>-->
-    <!--</tx:advice>-->
+    <bean id="dynamicDataSource" class="com.xly.mall.common.base.db.DynamicDataSource">
+        <property name="targetDataSources">
+            <map>
+                <entry value-ref="dataSource" key="${jdbc.key}" />
+                <entry value-ref="dataSourceA" key="${jdbc1.key}" />
+            </map>
+        </property>
+        <property name="lenientFallback" value="false" />
+        <property name="openLog" value="${logback.sql.openLog}" />
+        <property name="logLength" value="${logback.sql.logLength}" />
+        <property name="ignorePattern" value="${logback.sql.ignorePattern}" />
+        <property name="slowLimit" value="${jdbc.slowQuery.limit}" />
+    </bean>
 
-    <!-- Spring配置文件的核心点（数据源、与mybatis的整合，事务控制） -->
+    <bean id="dynamicCreateDataSourceManager" class="com.xly.mall.common.base.db.DynamicCreateDataSourceManager">
+        <property name="dynamicDataSource" ref="dynamicDataSource" />
+    </bean>
 </beans>

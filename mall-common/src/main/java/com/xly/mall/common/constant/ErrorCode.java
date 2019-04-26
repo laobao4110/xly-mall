@@ -17,6 +17,7 @@ public class ErrorCode {
     public static final String USER_PASSWORD_ERROR = "X000006";
     public static final String USER_PASSWORD_TOO_SIMPLE = "X000007";
     public static final String USER_EXIST = "X000008";
+    public static final String SYSTEM_ERROR = "X000009";
 
     static {
         MAP.put(SUCCESS, "成功");
@@ -28,6 +29,7 @@ public class ErrorCode {
         MAP.put(USER_PASSWORD_ERROR, "用户密码错误");
         MAP.put(USER_PASSWORD_TOO_SIMPLE, "密码包含大写字母、小写字母、数字、特殊符号中的至少三类，且长度在8到20之间");
         MAP.put(USER_EXIST, "用户存在");
+        MAP.put(SYSTEM_ERROR, "系统异常");
     }
 
     public static String getMessage(String code) {

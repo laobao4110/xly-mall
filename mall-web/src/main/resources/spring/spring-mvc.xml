@@ -21,6 +21,8 @@
         </mvc:return-value-handlers>
     </mvc:annotation-driven>
 
+    <bean class="com.xly.mall.common.base.db.ExceptionHandlerAdvice"></bean>
+
     <!-- defaultServlet负责对静态资源文件的访问 -->
     <mvc:default-servlet-handler />
 
@@ -33,5 +35,6 @@
         <property name="suffix" value=".jsp"></property>
     </bean>
 
+    <import resource="spring-aop.xml" />
 
 </beans>

@@ -1,6 +1,7 @@
 package com.xly.mall.core.service.user.impl;
 
 import com.xly.mall.common.base.ConverterUtil;
+import com.xly.mall.common.base.db.dbInterface.DynamicDataSource;
 import com.xly.mall.common.base.result.ServiceResult;
 import com.xly.mall.common.base.user.SessionManagement;
 import com.xly.mall.common.constant.CommonConstant;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService{
     @Autowired(required = false)
     private HttpSession session;
 
+    @DynamicDataSource()
     @Override
     public ServiceResult<String, User> userLogin(User user,String ip) {
         ServiceResult<String, User> result = new ServiceResult<>();
