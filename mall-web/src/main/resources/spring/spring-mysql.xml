@@ -151,6 +151,7 @@
         <property name="logLength" value="${logback.sql.logLength}" />
         <property name="ignorePattern" value="${logback.sql.ignorePattern}" />
         <property name="slowLimit" value="${jdbc.slowQuery.limit}" />
+        <property name="defaultTargetDataSourceKey" value="${jdbc.key}" />
     </bean>
 
     <bean id="dynamicCreateDataSourceManager" class="com.xly.mall.common.base.db.DynamicCreateDataSourceManager">

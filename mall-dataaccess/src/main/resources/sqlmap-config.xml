@@ -12,12 +12,10 @@
         <!--<package name="com.atguigu.crud.bean"/>-->
     <!--</typeAliases>-->
 
-    <!--<plugins>-->
-        <!--<plugin interceptor="com.github.pagehelper.PageInterceptor">-->
-            <!--&lt;!&ndash;分页参数合理化  &ndash;&gt;-->
-            <!--<property name="reasonable" value="true"/>-->
-        <!--</plugin>-->
-    <!--</plugins>-->
+    <plugins>
+        <plugin interceptor="com.xly.mall.common.base.result.SqlLogInterceptor"/>
+        <plugin interceptor="com.xly.mall.common.base.db.DdlDbInterceptor"/>
+    </plugins>
 
     <mappers>
             <mapper resource="sqlmap/mall_user.xml" />
