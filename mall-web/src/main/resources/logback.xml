@@ -33,7 +33,7 @@
 	</appender>
 
 
-	<!--<jmxConfigurator></jmxConfigurator>-->
+	<jmxConfigurator></jmxConfigurator>
 
 	<logger name="java.sql.Connection" level="${logback.sql.level}" />
 	<logger name="java.sql.Statement" level="${logback.sql.level}" />
@@ -48,5 +48,8 @@
 	<!--和以上  <logger name="java.sql.Connection" level="${logback.sql.level}" /> 含义一样 这里的 ${logback.root.level} 设置统一日志输出级别-->
 	<root level="${logback.root.level}">
 		<appender-ref ref="console" />
+		<appender-ref ref="${logback.appender.name}" />
+		<appender-ref ref="${logback.appender.error}" />
+		<appender-ref ref="${logback.appender.warn}" />
 	</root>
 </configuration>

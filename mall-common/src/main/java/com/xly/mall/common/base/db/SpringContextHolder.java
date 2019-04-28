@@ -14,5 +14,8 @@ public class SpringContextHolder implements ApplicationContextAware {
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         applicationContext = applicationContext;
+//        SqlSessionFactoryBean sqlSessionFactoryBean = applicationContext.getBean(SqlSessionFactoryBean.class);
+//        InterceptorUtil.setSqlSessionFactoryBean((SqlSessionFactoryBean) SpringContextHolder.applicationContext.getBean(SqlSessionFactoryBean.class));
+//        InterceptorUtil.dynamicAddInterceptor("com.xly.mall.common.base.result.SqlLogInterceptor");
     }
 }
