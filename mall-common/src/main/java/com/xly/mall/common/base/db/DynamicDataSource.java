@@ -10,7 +10,6 @@ import org.dom4j.io.SAXReader;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.InputStream;
 import java.net.URL;
@@ -119,21 +118,17 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
         DataSource dataSource = (DataSource)this.dataSourceMap.get(dataSourceKey);
         return dataSource;
     }
-    @PostConstruct
     public void initSqlLog() {
         if (this.openLog) {
             SqlLogInterceptor.setOpenLog(this.openLog);
             SqlLogInterceptor.setSlowLimit(this.slowLimit);
             SqlLogInterceptor.setLogLength(this.logLength);
             SqlLogInterceptor.setIgnorePattern(this.ignorePattern);
-//            ApplicationContext applicationContext = ContextLoaderListener.getCurrentWebApplicationContext();
-//            SqlSessionFactoryBean sqlSessionFactoryBean = applicationContext.getBean(SqlSessionFactoryBean.class);
-//            InterceptorUtil.setSqlSessionFactoryBean((SqlSessionFactoryBean)SpringContextHolder.applicationContext.getBean(SqlSessionFactoryBean.class));
-//            InterceptorUtil.dynamicAddInterceptor("com.xly.mall.common.base.result.SqlLogInterceptor");
+            InterceptorUtil.setSqlSessionFactoryBean(SpringContextHolder.applicationContext.getBean(SqlSessionFactoryBean.class));
+            InterceptorUtil.dynamicAddInterceptor("com.xly.mall.common.base.result.SqlLogInterceptor");
         }
 
     }
-    @PostConstruct
     public void initDdlConfig() {
         if (this.ddlFlag) {
             try {

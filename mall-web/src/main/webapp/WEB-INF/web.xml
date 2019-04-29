@@ -21,16 +21,16 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-  <!--<listener>-->
-    <!--<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>-->
-  <!--</listener>-->
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
 
   <filter>
     <filter-name>sessionFilter</filter-name>
     <filter-class>com.xly.mall.common.base.result.SessionFilter</filter-class>
     <init-param>
       <param-name>excludedPages</param-name>
-      <param-value>/WEB-INF/*,/js/*,/img/*,/pageController/*,/login,/pageController/toHome</param-value>
+      <param-value>/WEB-INF/*,/js/*,/img/*,/pageController/*,/login,/pageController/*,/user/*</param-value>
     </init-param>
   </filter>
   <filter-mapping>

@@ -16,45 +16,48 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Intercepts({@Signature(
-        type = Executor.class,
-        method = "update",
-        args = {MappedStatement.class, Object.class}
-), @Signature(
-        type = Executor.class,
-        method = "query",
-        args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}
-)})
+/**
+ * 日志查询拦截器
+ *
+ * @author lxzl
+ *
+ */
+@Intercepts({ @Signature(type = Executor.class, method = "update", args = { MappedStatement.class, Object.class }),
+        @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class }) })
 public class SqlLogInterceptor implements Interceptor {
-    private static final ThreadLocal<String> sqlLogContextHolder = new ThreadLocal();
-    private static final long DEFAULT_SLOW_LIMIT = 1000L;
+
+    private static final ThreadLocal<String> sqlLogContextHolder = new ThreadLocal<String>();
+
+    private static final long DEFAULT_SLOW_LIMIT = 1000l;
+
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private static boolean openLog;
+
     private static int logLength;
+
     private static long slowLimit;
+
     private static String ignorePattern;
 
-    public SqlLogInterceptor() {
-    }
-
     public static void setOpenLog(boolean openLog) {
-        openLog = openLog;
+        SqlLogInterceptor.openLog = openLog;
     }
 
     public static void setLogLength(int logLength) {
-        logLength = logLength;
+        SqlLogInterceptor.logLength = logLength;
     }
 
     public static void setSlowLimit(long slowLimit) {
-        slowLimit = slowLimit;
+        SqlLogInterceptor.slowLimit = slowLimit;
     }
 
     public static void setIgnorePattern(String ignorePattern) {
-        ignorePattern = ignorePattern;
+        SqlLogInterceptor.ignorePattern = ignorePattern;
     }
 
     public static String getExecuteSql() {
-        String sql = (String)sqlLogContextHolder.get();
+        String sql = sqlLogContextHolder.get();
         return sql;
     }
 
@@ -66,66 +69,59 @@ public class SqlLogInterceptor implements Interceptor {
         sqlLogContextHolder.remove();
     }
 
+    // public static Boolean getDdlFlag() {
+    // Boolean ddlFlag = ddlFlagContextHolder.get();
+    // return ddlFlag;
+    // }
+    //
+    // public static void setDdlFlag(Boolean ddlFlag) {
+    // ddlFlagContextHolder.set(ddlFlag);
+    // }
+    //
+    // public static void clearDdlFlagContext() {
+    // ddlFlagContextHolder.remove();
+    // }
+
+    @Override
     public Object intercept(Invocation invocation) throws Throwable {
-        if (!openLog) {
-            Object obj = invocation.proceed();
+        //默认开启sql日志
+        if (openLog) {
+            long startTime = System.currentTimeMillis();
+            long endTime = 0l;
+            Object obj = null;
+            MappedStatement mappedStatement = (MappedStatement) invocation.getArgs()[0];
+            String sqlId = mappedStatement.getId();
+
+            boolean sqlLogFlag = getSqlLogFlag(sqlId);
+            if (sqlLogFlag) {
+                try {
+                    boolean ddlFlag = getDdlFlag();
+                    String sqlLog1 = getExecuteMethodLog(ddlFlag,sqlId);
+                    log.info(sqlLog1);
+                    String sql = getSql(invocation, mappedStatement);
+                    String sqlLog2 = getExecuteSqlLog(sql);
+                    log.info(sqlLog2);
+                    obj = invocation.proceed();
+                } catch (Throwable t) {
+                    obj = t.getClass().getCanonicalName() + ":" + t.getMessage();
+                    throw t;
+                } finally {
+                    String result = "";
+                    if (isJavaClass(obj)) {
+                        result = JSON.toJSONString(obj);
+                    }
+                    endTime = (endTime == 0 ? System.currentTimeMillis() : endTime);
+                    long cost = endTime - startTime;
+                    long slowLimit = SqlLogInterceptor.slowLimit != 0l ? SqlLogInterceptor.slowLimit : DEFAULT_SLOW_LIMIT;
+                    boolean slowQuery = (cost > slowLimit);
+                    clearSqlLogContext();
+                    String sqlLog3 = getExecuteCostLog(slowQuery,startTime, endTime, cost,result);
+                    log.info(sqlLog3);
+                }
+            }
             return obj;
         } else {
-            long startTime = System.currentTimeMillis();
-            long endTime = 0L;
-            Object obj = null;
-            MappedStatement mappedStatement = (MappedStatement)invocation.getArgs()[0];
-            String sqlId = mappedStatement.getId();
-            boolean sqlLogFlag = this.getSqlLogFlag(sqlId);
-            if (sqlLogFlag) {
-                boolean var27 = false;
-
-                try {
-                    var27 = true;
-                    boolean ddlFlag = this.getDdlFlag().booleanValue();
-                    String sqlLog1 = this.getExecuteMethodLog(ddlFlag, sqlId);
-                    this.log.info(sqlLog1);
-                    String sql = this.getSql(invocation, mappedStatement);
-                    String sqlLog2 = this.getExecuteSqlLog(sql);
-                    this.log.info(sqlLog2);
-                    obj = invocation.proceed();
-                    var27 = false;
-                } catch (Throwable var28) {
-                    obj = var28.getClass().getCanonicalName() + ":" + var28.getMessage();
-                    throw var28;
-                } finally {
-                    if (var27) {
-                        String result = "";
-                        if (isJavaClass(obj)) {
-                            result = JSON.toJSONString(obj);
-                        }
-
-                        endTime = endTime == 0L ? System.currentTimeMillis() : endTime;
-                        long cost = endTime - startTime;
-                        long slowLimit = 0;
-                        slowLimit = slowLimit != 0L ? slowLimit : 1000L;
-                        boolean slowQuery = cost > slowLimit;
-                        clearSqlLogContext();
-                        String sqlLog3 = this.getExecuteCostLog(slowQuery, startTime, endTime, cost, result);
-                        this.log.info(sqlLog3);
-                    }
-                }
-
-                String result = "";
-                if (isJavaClass(obj)) {
-                    result = JSON.toJSONString(obj);
-                }
-
-                endTime = endTime == 0L ? System.currentTimeMillis() : endTime;
-                long cost = endTime - startTime;
-                long slowLimit = 0;
-                slowLimit = slowLimit != 0L ? slowLimit : 1000L;
-                boolean slowQuery = cost > slowLimit;
-                clearSqlLogContext();
-                String sqlLog3 = this.getExecuteCostLog(slowQuery, startTime, endTime, cost, result);
-                this.log.info(sqlLog3);
-            }
-
+            Object obj = invocation.proceed();
             return obj;
         }
     }
@@ -133,17 +129,25 @@ public class SqlLogInterceptor implements Interceptor {
     private boolean getSqlLogFlag(String sqlId) {
         if (StringUtil.isBlank(ignorePattern)) {
             return true;
-        } else if (StringUtil.isBlank(sqlId)) {
+        }
+
+        if (StringUtil.isBlank(sqlId)) {
             return true;
+        }
+
+        Pattern pattern = Pattern.compile(ignorePattern);
+        Matcher matcher = pattern.matcher(sqlId);
+
+        if (matcher.matches()) {
+            return false;
         } else {
-            Pattern pattern = Pattern.compile(ignorePattern);
-            Matcher matcher = pattern.matcher(sqlId);
-            return !matcher.matches();
+            return true;
         }
     }
 
     private String getSql(Invocation invocation, MappedStatement mappedStatement) {
         String sql = getExecuteSql();
+
         if (sql == null) {
             Object parameter = invocation.getArgs()[1];
             BoundSql boundSql = mappedStatement.getBoundSql(parameter);
@@ -156,45 +160,61 @@ public class SqlLogInterceptor implements Interceptor {
 
     private Boolean getDdlFlag() {
         String sql = getExecuteSql();
-        return sql != null ? true : false;
-    }
 
-    private String getExecuteMethodLog(boolean ddlFlag, String method) {
-        String ddlFlagLog = ddlFlag ? "(ddl)" : "";
-        return String.format(ddlFlagLog + "method:%s", method);
-    }
-
-    private String getExecuteSqlLog(String sql) {
-        return String.format("【Execute Sql】%s", sql);
-    }
-
-    private String getExecuteCostLog(boolean slowQuery, long startTime, long endTime, long cost, String result) {
-        String startTimeStr = DateUtil.formatDate(startTime, "yyyy-MM-dd HH:mm:ss.SSS");
-        String endTimeStr = DateUtil.formatDate(endTime, "yyyy-MM-dd HH:mm:ss.SSS");
-        String slowQueryLog = slowQuery ? "(slowQuery)" : "";
-        result = StringUtil.isBlank(result) ? "" : "result:" + result;
-        return String.format("【Execute Cost:%dms】" + result + slowQueryLog + "(start:%s, end:%s)", cost, startTimeStr, endTimeStr);
-    }
-
-    private static boolean isJavaClass(Object o) {
-        if (!(o instanceof String) && !(o instanceof Integer) && !(o instanceof Long) && !(o instanceof Short) && !(o instanceof Character) && !(o instanceof Boolean) && !(o instanceof Byte) && !(o instanceof Float) && !(o instanceof Double)) {
-            if (o instanceof List) {
-                List lo = (List)o;
-                if (lo != null && lo.size() > 0) {
-                    return isJavaClass(lo.get(0));
-                }
-            }
-
-            return false;
-        } else {
+        if (sql != null) {
             return true;
+        } else {
+            return false;
         }
     }
 
+    private String getExecuteMethodLog( boolean ddlFlag,String method) {
+        String ddlFlagLog = ddlFlag ? "(ddl)" : "";
+        return String.format( ddlFlagLog + "method:%s",method );
+    }
+    private String getExecuteSqlLog( String sql) {
+        return String.format( "【Execute Sql】%s",sql );
+    }
+
+    private String getExecuteCostLog(boolean slowQuery, long startTime, long endTime, long cost, String result) {
+        String startTimeStr = DateUtil.formatDate(startTime, DateUtil.MAX_LONG_DATE_FORMAT_STR);
+        String endTimeStr = DateUtil.formatDate(endTime, DateUtil.MAX_LONG_DATE_FORMAT_STR);
+        String slowQueryLog = slowQuery ? "(slowQuery)" : "";
+        result = StringUtil.isBlank(result) ? "" : "result:" + result;
+        return String.format(
+                "【Execute Cost:%dms】" + result + slowQueryLog + "(start:%s, end:%s)",
+                cost, startTimeStr, endTimeStr);
+    }
+    /**
+     * 判断是否是基本类型
+     * @return
+     */
+    private static boolean isJavaClass(Object o) {
+        if(o instanceof String ||
+                o instanceof Integer ||
+                o instanceof Long ||
+                o instanceof Short ||
+                o instanceof Character ||
+                o instanceof Boolean ||
+                o instanceof Byte ||
+                o instanceof Float ||
+                o instanceof  Double) {
+            return true;
+        }else if(o instanceof List){
+            List lo = (List)o;
+            if(lo!=null&&lo.size()>0){
+                return isJavaClass(lo.get(0));
+            }
+        }
+        return false;
+    }
+    @Override
     public Object plugin(Object target) {
         return Plugin.wrap(target, this);
     }
 
+    @Override
     public void setProperties(Properties properties) {
     }
+
 }

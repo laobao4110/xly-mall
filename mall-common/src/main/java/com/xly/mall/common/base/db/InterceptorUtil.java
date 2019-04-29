@@ -8,17 +8,15 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.type.TypeAliasRegistry;
 import org.mybatis.spring.SqlSessionFactoryBean;
 
+
 public class InterceptorUtil {
+
     private static SqlSessionFactoryBean sqlSessionFactoryBean;
 
-    public InterceptorUtil() {
-    }
-
     public static void setSqlSessionFactoryBean(SqlSessionFactoryBean sqlSessionFactoryBean) {
-        if (sqlSessionFactoryBean == null) {
-            sqlSessionFactoryBean = sqlSessionFactoryBean;
+        if (InterceptorUtil.sqlSessionFactoryBean == null) {
+            InterceptorUtil.sqlSessionFactoryBean = sqlSessionFactoryBean;
         }
-
     }
 
     public static void dynamicAddInterceptor(String typeClass) {
@@ -26,22 +24,20 @@ public class InterceptorUtil {
             SqlSessionFactory sqlSessionFactory = sqlSessionFactoryBean.getObject();
             Configuration configuration = sqlSessionFactory.getConfiguration();
             TypeAliasRegistry typeAliasRegistry = configuration.getTypeAliasRegistry();
-            Interceptor interceptor = (Interceptor)resolveClass(typeClass, typeAliasRegistry).newInstance();
+            Interceptor interceptor = (Interceptor) resolveClass(typeClass, typeAliasRegistry).newInstance();
             configuration.addInterceptor(interceptor);
-        } catch (Exception var5) {
-            throw new SystemException("DynamicAddInterceptor error", var5);
+        } catch (Exception e) {
+            throw new SystemException("DynamicAddInterceptor error", e);
         }
     }
 
     private static Class<?> resolveClass(String alias, TypeAliasRegistry typeAliasRegistry) {
-        if (alias == null) {
+        if (alias == null)
             return null;
-        } else {
-            try {
-                return resolveAlias(alias, typeAliasRegistry);
-            } catch (Exception var3) {
-                throw new BuilderException("Error resolving class . Cause: " + var3, var3);
-            }
+        try {
+            return resolveAlias(alias, typeAliasRegistry);
+        } catch (Exception e) {
+            throw new BuilderException("Error resolving class . Cause: " + e, e);
         }
     }
 
@@ -49,4 +45,3 @@ public class InterceptorUtil {
         return typeAliasRegistry.resolveAlias(alias);
     }
 }
-

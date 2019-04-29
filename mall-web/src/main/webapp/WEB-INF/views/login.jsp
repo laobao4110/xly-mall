@@ -38,7 +38,7 @@
                     </label>
                 </div>
                 <button type="submit" class="btn btn-primary" id="btn-login">登录</button>
-                <a href="/user/toRegister" class="btn btn-default">注册</a>
+                <a href="/pageController/toRegister" class="btn btn-default">注册</a>
             </form>
         </div>
         <div class="col-md-4">

@@ -38,7 +38,7 @@
                 <label for="password2">重复密码</label>
                 <input type="password" name="password2" id="password2" class="form-control" placeholder="请再次输入密码" required maxLength="16"><br>
                 <button type="submit" class="btn btn-primary" id="btn-reg1">注册</button>
-                <a href="index.jsp" class="btn btn-default" id="btn-reg2">返回登录</a>
+                <a href="/pageController/toHome" class="btn btn-default" id="btn-reg2">返回登录</a>
             </form>
         </div>
         <div class="col-md-4">
