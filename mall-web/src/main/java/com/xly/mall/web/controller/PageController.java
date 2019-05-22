@@ -25,7 +25,7 @@ public class PageController {
      * @param
      * @return Result
      */
-    @RequestMapping(value = "toLoginPage", method = RequestMethod.GET)
+    @RequestMapping(value = "toLoginPage")
     public String toLoginPage() {
         return "login";
     }
@@ -36,8 +36,19 @@ public class PageController {
      * @param
      * @return Result
      */
-    @RequestMapping(value = "toHome", method = RequestMethod.GET)
+    @RequestMapping(value = "toHome", method = RequestMethod.POST)
     public String toHome() {
         return "home";
+    }
+
+    /**
+     * 到主页
+     *
+     * @param
+     * @return Result
+     */
+    @RequestMapping(value = "toBaidu")
+    public String toBaidu() {
+        return "forward:www.baidu.com";
     }
 }

@@ -26,7 +26,7 @@
         </div>
         <div class="col-md-4">
 
-            <form class="form-signin" action="/user/add" method="post">
+            <form class="form-signin" action="${pageContext.request.contextPath}/user/add" method="post">
                 <h2 class="form-signin-heading">注册到jsp作业</h2>
                 <div id="info">
 
@@ -38,8 +38,11 @@
                 <label for="password2">重复密码</label>
                 <input type="password" name="password2" id="password2" class="form-control" placeholder="请再次输入密码" required maxLength="16"><br>
                 <button type="submit" class="btn btn-primary" id="btn-reg1">注册</button>
-                <a href="/pageController/toHome" class="btn btn-default" id="btn-reg2">返回登录</a>
             </form>
+            <form action="${pageContext.request.contextPath}/pageController/toHome" class="form-signin" method="post">
+                <button type="submit" class="btn btn-primary" id="btn-longin">返回登录</button>
+            </form>
+
         </div>
         <div class="col-md-4">
         </div>

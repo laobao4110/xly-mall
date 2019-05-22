@@ -30,7 +30,7 @@
     <filter-class>com.xly.mall.common.base.result.SessionFilter</filter-class>
     <init-param>
       <param-name>excludedPages</param-name>
-      <param-value>/WEB-INF/*,/js/*,/img/*,/pageController/*,/login,/pageController/*,/user/*</param-value>
+      <param-value>/WEB-INF/*,/js/*,/img/*,/login,/pageController/toRegister,/pageController/toLoginPage,/pageController/toBaidu,/user/*</param-value>
     </init-param>
   </filter>
   <filter-mapping>

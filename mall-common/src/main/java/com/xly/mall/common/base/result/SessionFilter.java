@@ -50,7 +50,7 @@ public class SessionFilter  implements Filter {
             for (String page : excludedPageArray) {//判断是否在过滤url之外
                 Pattern pattern = Pattern.compile(page);
                 Matcher matcher = pattern.matcher(requestPath);
-                if (requestPath.endsWith(page) || matcher.find()) {
+                if ((requestPath.endsWith(page) || matcher.find())) {
                     isExcludedPage = true;
                     break;
                 }
@@ -80,6 +80,7 @@ public class SessionFilter  implements Filter {
                 out.write("timeout");
 //                out.close();
             } else {
+                String sss = request.getContextPath() + "/pageController/toLoginPage";
                 ((HttpServletResponse) servletResponse).sendRedirect(request.getContextPath() + "/pageController/toLoginPage");
 //                    filterChain.doFilter(request, servletResponse);
             }
